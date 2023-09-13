@@ -1,4 +1,4 @@
-import { IsNumber, IsString, Length, Min } from "class-validator";
+import { IsNumber, IsOptional, IsString, Length, Min } from "class-validator";
 
 export class UpdateContactDto {
 
@@ -15,7 +15,8 @@ export class UpdateContactDto {
   email: string;
 
   @IsString()
-  @Length(1, 255)
+  @Length(0, 255)
+  @IsOptional()
   imageURL: string;
 
   @IsNumber()

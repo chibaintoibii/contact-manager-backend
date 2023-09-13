@@ -21,6 +21,7 @@ export class ContactsService {
 
   async getAllContacts() {
     return this.contactsRepository.findAll({
+      where: {state: 1},
       order: [['name', 'ASC']],
       attributes: ['id', 'name', 'email', 'phoneNumber', 'groupId', 'imageURL']
     })
@@ -28,14 +29,14 @@ export class ContactsService {
 
   async getContactById(id: number) {
     return this.contactsRepository.findOne({
-      where: { id },
+      where: { id, state: 1 },
       attributes: ['id', 'name', 'email', 'phoneNumber', 'groupId', 'imageURL']
     });
   }
 
   async getContactsByGroup(groupId: number) {
     return this.contactsRepository.findAll({
-      where: { groupId }
+      where: { groupId, state: 1 }
     });
   }
 
@@ -57,7 +58,7 @@ export class ContactsService {
 
     if(!contact) throw new HttpException('Contact not found', 404);
 
-    contact.state = 1;
+    contact.state = 0;
     await contact.save();
 
     return {message: 'Contact deleted successfully'};
