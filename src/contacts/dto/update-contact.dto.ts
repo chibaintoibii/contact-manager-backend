@@ -22,4 +22,7 @@ export class UpdateContactDto {
   @IsNumber()
   @Min(1)
   groupId: number;
+
+  @IsNumber()
+  id: number;
 }

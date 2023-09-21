@@ -2,17 +2,19 @@ import {
   Body,
   Controller,
   Delete,
-  Get, HttpException,
+  Get,
   Param,
   ParseIntPipe,
   Post,
-  Put
+  Put, Req, UseGuards
 } from "@nestjs/common";
 import { ContactsService } from "./contacts.service";
 import { CreateContactDto } from "./dto/create-contact.dto";
 import { UpdateContactDto } from "./dto/update-contact.dto";
+import { AuthGuard } from "../auth/auth.guard";
 
 @Controller('contacts')
+@UseGuards(AuthGuard)
 export class ContactsController {
   constructor(private readonly contactsService: ContactsService){}
 
@@ -22,13 +24,15 @@ export class ContactsController {
   }
 
   @Get()
-  getAllContacts() {
-    return this.contactsService.getAllContacts();
+  getAllContacts(@Req() req) {
+    const userId = req.user.id;
+    return this.contactsService.getAllContacts(userId);
   }
 
   @Get(':id')
-  getContactById(@Param('id', ParseIntPipe) id: number) {
-    return this.contactsService.getContactById(id);
+  getContactById(@Req() req, @Param('id', ParseIntPipe) id: number) {
+    const userId = req.user.id;
+    return this.contactsService.getContactById(userId, id);
   }
 
   @Put(':id')
@@ -37,7 +41,8 @@ export class ContactsController {
   }
 
   @Delete(':id')
-  deleteContact(@Param('id', ParseIntPipe) id: number) {
-    return this.contactsService.deleteContact(id);
+  deleteContact(@Req() req, @Param('id', ParseIntPipe) id: number) {
+    const userId = req.user.id;
+    return this.contactsService.deleteContact(userId, id);
   }
 }

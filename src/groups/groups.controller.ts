@@ -1,10 +1,12 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Req, UseGuards } from "@nestjs/common";
 import { CreateGroupDto } from "./dto/create-group.dto";
 import { UpdateGroupDto } from "./dto/update-group.dto";
 import { GroupsService } from "./groups.service";
 import { ContactsService } from "../contacts/contacts.service";
+import { AuthGuard } from "../auth/auth.guard";
 
 @Controller('groups')
+// @UseGuards(AuthGuard)
 export class GroupsController {
   constructor(
     private readonly groupsService: GroupsService,
@@ -17,8 +19,10 @@ export class GroupsController {
   }
 
   @Get('/:id/contacts')
-  getGroupContacts(@Param('id', ParseIntPipe) id: number) {
-    return this.contactsService.getContactsByGroup(id);
+  getGroupContacts(@Req() req, @Param('id', ParseIntPipe) id: number) {
+    const userId = req.user.id;
+    return this.contactsService.getContactsByGroup(userId, id);
+
   }
 
   @Get('/:id')

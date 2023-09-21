@@ -1,5 +1,6 @@
 import { BelongsTo, Column, ForeignKey, Table, Model, DataType } from "sequelize-typescript";
 import { Group } from "../../groups/models/group.model";
+import { User } from "../../users/models/user.model";
 
 @Table({ timestamps: false, tableName: 'contacts' })
 export class Contact extends Model<Contact> {
@@ -9,6 +10,13 @@ export class Contact extends Model<Contact> {
     autoIncrement: true
   })
   id: number;
+
+  @ForeignKey(() => User)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false
+  })
+  user_id: number;
 
   @Column({
     type: DataType.STRING,

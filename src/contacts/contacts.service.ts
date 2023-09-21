@@ -1,8 +1,8 @@
 import { HttpException, Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/sequelize";
 import { Contact } from "./models/contact.model";
 import { UpdateContactDto } from "./dto/update-contact.dto";
 import { CreateContactDto } from "./dto/create-contact.dto";
-import { InjectModel } from "@nestjs/sequelize";
 
 @Injectable()
 export class ContactsService {
@@ -11,38 +11,38 @@ export class ContactsService {
   ) {}
   async createContact(dto: CreateContactDto) {
     const contact = await this.contactsRepository.findOne({
-      where: {phoneNumber: dto.phoneNumber}
+      where: { phoneNumber: dto.phoneNumber }
     })
 
     if(contact) throw new HttpException('this contact has already been created', 400);
 
-    return this.contactsRepository.create({ ...dto });
+    return this.contactsRepository.create({ ...dto, user_id: dto.userId });
   }
 
-  async getAllContacts() {
+  async getAllContacts(userId: number) {
     return this.contactsRepository.findAll({
-      where: {state: 1},
+      where: { state: 1, user_id: userId },
       order: [['name', 'ASC']],
-      attributes: ['id', 'name', 'email', 'phoneNumber', 'groupId', 'imageURL']
+      attributes: ['id', 'name', 'email', 'phoneNumber', 'groupId', 'imageURL'],
     })
   }
 
-  async getContactById(id: number) {
+  async getContactById(userId: number, id: number) {
     return this.contactsRepository.findOne({
-      where: { id, state: 1 },
+      where: { id, state: 1, user_id: userId },
       attributes: ['id', 'name', 'email', 'phoneNumber', 'groupId', 'imageURL']
     });
   }
 
-  async getContactsByGroup(groupId: number) {
+  async getContactsByGroup(userId: number, groupId: number) {
     return this.contactsRepository.findAll({
-      where: { groupId, state: 1 }
+      where: { groupId, state: 1, user_id: userId }
     });
   }
 
-  async updateContact(id: number, dto: UpdateContactDto) {
+  async updateContact(userId: number, dto: UpdateContactDto) {
     let contact = await this.contactsRepository.findOne({
-      where: {id, state: 1}
+      where: { id: dto.id, state: 1 }
     });
     if(!contact) throw new HttpException('Contact not found', 404);
 
@@ -51,9 +51,9 @@ export class ContactsService {
     return contact;
   }
 
-  async deleteContact(id: number) {
+  async deleteContact(userId: number, id: number) {
     const contact = await this.contactsRepository.findOne({
-      where: {id, state: 1}
+      where: { id, state: 1, user_id: userId },
     });
 
     if(!contact) throw new HttpException('Contact not found', 404);
@@ -61,6 +61,6 @@ export class ContactsService {
     contact.state = 0;
     await contact.save();
 
-    return {message: 'Contact deleted successfully'};
+    return { message: 'Contact deleted successfully' };
   }
 }
