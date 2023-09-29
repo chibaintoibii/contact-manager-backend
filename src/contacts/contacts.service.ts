@@ -9,14 +9,14 @@ export class ContactsService {
   constructor(
     @InjectModel(Contact) private readonly contactsRepository: typeof Contact
   ) {}
-  async createContact(dto: CreateContactDto) {
+  async createContact(userId: number, dto: CreateContactDto) {
     const contact = await this.contactsRepository.findOne({
-      where: { phoneNumber: dto.phoneNumber }
-    })
+      where: { phoneNumber: dto.phoneNumber, user_id: userId }
+    });
 
     if(contact) throw new HttpException('this contact has already been created', 400);
 
-    return this.contactsRepository.create({ ...dto, user_id: dto.userId });
+    return this.contactsRepository.create({ ...dto, user_id: userId });
   }
 
   async getAllContacts(userId: number) {

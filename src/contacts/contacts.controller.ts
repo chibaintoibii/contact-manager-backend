@@ -6,8 +6,9 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Put, Req, UseGuards
-} from "@nestjs/common";
+  Put, Req, Res, UseGuards,
+} from '@nestjs/common';
+import {Response} from 'express'
 import { ContactsService } from "./contacts.service";
 import { CreateContactDto } from "./dto/create-contact.dto";
 import { UpdateContactDto } from "./dto/update-contact.dto";
@@ -19,8 +20,9 @@ export class ContactsController {
   constructor(private readonly contactsService: ContactsService){}
 
   @Post()
-  createContact(@Body() dto: CreateContactDto) {
-    return this.contactsService.createContact(dto);
+  createContact(@Req() req, @Body() dto: CreateContactDto) {
+    const userId = req.user.id;
+    return this.contactsService.createContact(userId, dto);
   }
 
   @Get()

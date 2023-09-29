@@ -21,7 +21,4 @@ export class CreateContactDto {
   @IsNumber()
   @Min(1)
   groupId: number;
-
-  @IsNumber()
-  userId: number;
 }

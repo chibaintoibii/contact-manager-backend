@@ -6,7 +6,7 @@ export class User extends Model<User> {
   id: number;
 
   @Column({type: DataType.STRING, allowNull: false, unique: true})
-  username: string;
+  email: string;
 
   @Column({type: DataType.STRING, allowNull: false})
   password: string;

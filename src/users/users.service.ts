@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from "@nestjs/sequelize";
 import { User } from "./models/user.model";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { InjectModel } from "@nestjs/sequelize";
 
 @Injectable()
 export class UsersService {
@@ -11,7 +11,7 @@ export class UsersService {
     return this.usersRepository.create(dto);
   }
 
-  async findByUsername(username: string) {
-    return this.usersRepository.findOne({ where: { username } });
+  async findByEmail(email: string) {
+    return this.usersRepository.findOne({ where: { email } });
   }
 }

@@ -31,11 +31,7 @@ import { User } from "./users/models/user.model";
     GroupsModule,
     UsersModule,
     AuthModule,
-    JwtModule.register({
-      global: true,
-      secret: 'my-secret-key',
-      signOptions: { expiresIn: '1h' },
-    })
+    JwtModule.register({})
   ],
   providers: []
 })
